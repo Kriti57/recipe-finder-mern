@@ -1,0 +1,44 @@
+.recipe-link {
+  /* removes the default blue color and underline */
+  text-decoration: none;
+  color: inherit;
+  /* link takes up the full space in the grid cell */
+  display: block;
+}
+
+.recipe-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  /* Layout and sizing */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Ensures the image's rounded corners are respected */
+
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.recipe-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.recipe-card-image {
+  width: 100%;
+  height: 200px;     
+  object-fit: cover;  /* This crucial property ensures the image fills the space without being stretched or squashed. */
+}
+
+.recipe-card-body {
+  padding: 1rem;
+}
+
+.recipe-card-title {
+  /* Reset default margins and set a clean font style */
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
