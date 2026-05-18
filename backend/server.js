@@ -28,6 +28,9 @@ app.use('/api/favorites', favoriteRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
+app.get("/", (req, res) => {
+  res.send("Server running");
+});
 
 // define a port for the server to listen on for incoming network traffic
 const PORT = process.env.PORT || 5000;
