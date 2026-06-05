@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/authContext';
+import { useAuth } from './AuthContext';       
+import { AuthProvider } from './AuthProvider'; 
 import { getFavorites, removeFavorite, updateFavoriteNote } from '../services/favoriteService';
 import { getRecipeById } from '../services/recipeService';
 import RecipeCard from '../components/RecipeCard';
