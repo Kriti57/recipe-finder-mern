@@ -10,6 +10,9 @@ connectDB();
 const { notFound, errorHandler } = require('./middleware/errorMiddleware'); 
 
 const userRoutes = require('./routes/userRoutes');
+
+console.log("USER ROUTES LOADED");
+
 const favoriteRoutes = require('./routes/favoriteRoutes');
 
 const app = express();
