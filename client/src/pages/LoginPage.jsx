@@ -20,9 +20,12 @@ const LoginPage = () => {
     setError('');
 
     try {
-      const data = await loginRequest({email, password});
-      console.log("LOGIN RESPONSE:", data);
-      login(data, data.token);
+      const data = await loginRequest({ email, password });
+
+      login({
+        user: data.user,
+        token: data.token
+      });
       navigate(from, { replace: true });
 
     } catch (err) {

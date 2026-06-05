@@ -1,5 +1,4 @@
-import React, {useState, useEffect} from 'react';
-
+import React, { useState } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -17,19 +16,19 @@ import {
  * @param {function} props.onClose - Function to call when the modal should be closed.
  * @param {object} props.recipe - The recipe object being edited.
  * @param {function} props.onSave - Function to call when the user clicks 'Save'.
- * @returns {React.ReactElement} A dialog component.
  */
 
-const NotesEditModal = ({open, onClose, recipe, onSave}) => {
+const NotesEditModal = ({ open, onClose, recipe, onSave }) => {
     const [notesText, setNotesText] = useState('');
 
-    useEffect(() => {
+    const handleEnter = () => {
         if (recipe) {
-            setNotesText(recipe.notes);
+            setNotesText(recipe.notes || '');
         }
-    }, [recipe]);
+    };
 
     const handleSave = () => {
+        if (!recipe) return;
         onSave(recipe.idMeal, notesText);
     };
 
@@ -38,13 +37,23 @@ const NotesEditModal = ({open, onClose, recipe, onSave}) => {
     }
 
     return (
-        <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-            <DialogTitle>Edit Notes for {recipe.strMeal}</DialogTitle>
+        <Dialog
+            open={open}
+            onClose={onClose}
+            fullWidth
+            maxWidth="sm"
+            onEnter={handleEnter}
+        >
+            <DialogTitle>
+                Edit Notes for {recipe.strMeal}
+            </DialogTitle>
+
             <DialogContent>
                 <Typography variant="body2" sx={{ mb: 2 }}>
-                    Add or Update your personal notes for this recipe.
+                    Add or update your personal notes for this recipe.
                 </Typography>
-                <TextField 
+
+                <TextField
                     autoFocus
                     margin="dense"
                     id="notes"
@@ -56,9 +65,10 @@ const NotesEditModal = ({open, onClose, recipe, onSave}) => {
                     rows={4}
                     value={notesText}
                     onChange={(e) => setNotesText(e.target.value)}
-                    /> 
+                />
             </DialogContent>
-            <DialogActions sx={{p:'0 24px 24px'}}>
+
+            <DialogActions sx={{ p: '0 24px 24px' }}>
                 <Button onClick={onClose}>Cancel</Button>
                 <Button onClick={handleSave} variant="contained">
                     Save

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/authContext';
 import { getFavorites, removeFavorite, updateFavoriteNote } from '../services/favoriteService';
 import { getRecipeById } from '../services/recipeService';
 import RecipeCard from '../components/RecipeCard';
@@ -14,50 +15,54 @@ const FavoritesPage = () => {
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user, loading: authLoading } = useAuth();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
 
   useEffect(() => {
-    const fetchAndProcessFavorites = async () => {
-      try {
-        setError(null);
-        setLoading(true);
+  if (authLoading || !user) return;
 
-        const favoriteObjects = await getFavorites();
+  const fetchAndProcessFavorites = async () => {
+    try {
+      setError(null);
+      setLoading(true);
 
-        if (favoriteObjects.length === 0) {
-          setFavoriteRecipes([]); // Ensure the list is empty
-          setLoading(false);
-          return;
-        }
+      const favoriteObjects = await getFavorites();
 
-        const recipeIds = favoriteObjects.map(fav => fav.recipeId);
-        const recipeDetailPromises = recipeIds.map(id => getRecipeById(id));
-        const fetchedRecipeDetails = await Promise.all(recipeDetailPromises);
+      if (favoriteObjects.length === 0) {
+        setFavoriteRecipes([]);
+        return;
+      }
 
-        const combinedFavorites = fetchedRecipeDetails.map(recipe => {
-          const userFavoriteData = favoriteObjects.find(
-            fav => fav.recipeId === recipe.idMeal
-          );
+      const recipeIds = favoriteObjects.map(fav => fav.recipeId);
+      const fetchedRecipeDetails = await Promise.all(
+        recipeIds.map(id => getRecipeById(id))
+      );
 
-          return {
-            ...recipe, 
-            notes: userFavoriteData ? userFavoriteData.notes : '', 
-          };
-        });
-        
-        setFavoriteRecipes(combinedFavorites);
+      const combinedFavorites = fetchedRecipeDetails.map(recipe => {
+        const userFavoriteData = favoriteObjects.find(
+          fav => fav.recipeId === recipe.idMeal
+        );
 
-        } catch (err) {
-          setError(err.message || 'An error occurred while fetching your favorites.');
-        } finally {
-          setLoading(false);
-        }
-      };
+        return {
+          ...recipe,
+          notes: userFavoriteData ? userFavoriteData.notes : '',
+        };
+      });
 
-      fetchAndProcessFavorites();
-    }, []);
+      setFavoriteRecipes(combinedFavorites);
+
+    } catch (err) {
+      setError(err.message || 'An error occurred while fetching your favorites.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchAndProcessFavorites();
+}, [user, authLoading]);
+
 
   /**
    * @param {string} recipeId - The ID of the recipe to remove.
@@ -175,7 +180,15 @@ const FavoritesPage = () => {
 
               </Paper>
 
-              {/* The remove button will go here in a later step */}
+              <Button
+                variant="contained"
+                color="error"
+                size="small"
+                onClick={() => handleRemoveFavorite(recipe.idMeal)}
+                sx={{ mt: 1 }}
+              >
+                Remove
+              </Button>
               </Box> 
             </Grid>
           ))}

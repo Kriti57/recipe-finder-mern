@@ -4,8 +4,8 @@ import { getRecipeById } from '../services/recipeService';
 import { AuthContext } from '../context/AuthContext';
 import { addFavorite } from '../services/favoriteService';
 import LoadingSpinner from '../components/LoadingSpinner';
-
 import ErrorComponent from '../components/ErrorComponent';
+
 import {
   Container,
   Grid,
@@ -20,6 +20,8 @@ const RecipePage = () => {
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const { user } = useContext(AuthContext);
   const [feedback, setFeedback] = useState({ message: '', type: '' });
 
@@ -28,8 +30,9 @@ const RecipePage = () => {
       try {
         const data = await getRecipeById(recipeId);
         setRecipe(data);
-      } catch (error) {
-        console.error('Error fetching recipe:', error);
+      } catch (err) {
+        console.error('Error fetching recipe:', err);
+        setError('Failed to load recipe.');
       } finally {
         setLoading(false);
       }
@@ -47,34 +50,41 @@ const RecipePage = () => {
     }
   };
 
-  if (loading) return <LoadingSpinner />;
-  if (!recipe) return <Typography>Recipe not found.</Typography>;
-
   const getIngredients = () => {
+    if (!recipe) return [];
+
     const ingredients = [];
+
     for (let i = 1; i <= 20; i++) {
-      if (recipe[`strIngredient${i}`]) {
-        ingredients.push(
-          `${recipe[`strIngredient${i}`]} - ${recipe[`strMeasure${i}`]}`
-        );
+      const ingredient = recipe[`strIngredient${i}`];
+      const measure = recipe[`strMeasure${i}`];
+
+      if (ingredient) {
+        ingredients.push(`${ingredient} - ${measure || ''}`);
       }
     }
+
     return ingredients;
-
-    if (error) {
-      return (
-        <Container sx={{ py: 4 }}>
-          <ErrorComponent message={error} />
-        </Container>
-      );
-    }
-
   };
+
+  if (loading) return <LoadingSpinner />;
+
+  if (error) {
+    return (
+      <Container sx={{ py: 4 }}>
+        <ErrorComponent message={error} />
+      </Container>
+    );
+  }
+
+  if (!recipe) {
+    return <Typography>Recipe not found.</Typography>;
+  }
 
   return (
     <Container sx={{ py: 4 }}>
       <Grid container spacing={4}>
-        <Grid size={{ xs: 12, md:5}}>
+        <Grid size={{ xs: 12, md: 5 }}>
           <Box
             component="img"
             src={recipe.strMealThumb}
@@ -83,7 +93,7 @@ const RecipePage = () => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md:5}}>
+        <Grid size={{ xs: 12, md: 5 }}>
           <Stack spacing={2}>
             <Typography variant="h3">{recipe.strMeal}</Typography>
 

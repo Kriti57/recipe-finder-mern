@@ -1,19 +1,6 @@
-import React, {createContext, useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const parseJwt = (token) => {
-    try{
-        return JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-        return null;
-    }
-};
-
-export const AuthContext = createContext(null);
-
-export const useAuth = () => {
-    return useContext(AuthContext);
-}
+import { AuthContext } from './authContext';
 
 export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
@@ -59,12 +46,13 @@ export const AuthProvider = ({children}) => {
     }, []);
 
 
-    const login = (userData, token) => {
-        localStorage.setItem('token', token); 
+    const login = ({ user, token }) => {
+        localStorage.setItem('token', token);
+
         setUser({
-            id: userData._id,   
-            name: userData.name,
-            email: userData.email,
+            id: user._id,
+            name: user.name,
+            email: user.email,
         });
     };
 
