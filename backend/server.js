@@ -34,6 +34,10 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 app.use('/api/users', userRoutes);
 app.use('/api/favorites', favoriteRoutes);
 
