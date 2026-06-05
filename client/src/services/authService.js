@@ -1,7 +1,7 @@
 import axios from 'axios'; //for making HTTP requests
 const API_BASE = import.meta.env.VITE_BACKEND_API_URL;
 console.log("VITE_BACKEND_API_URL =", import.meta.env.VITE_BACKEND_API_URL);
-
+console.log("LOGIN URL:", `${API_BASE}/api/users/login`);
 /**
  * Sends a POST request to the backend to register a new user.
  * @param {object} userData - The user's data (name, email, password).
