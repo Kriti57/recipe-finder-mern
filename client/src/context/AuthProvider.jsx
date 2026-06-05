@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from './AuthContext';
+import { AuthContext } from './AuthContext.js';
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
