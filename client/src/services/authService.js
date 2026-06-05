@@ -1,5 +1,6 @@
 import axios from 'axios'; //for making HTTP requests
-const API_URL = import.meta.env.VITE_BACKEND_API_URL + '/api/users'; // check if its users or not !!!
+const API_BASE = import.meta.env.VITE_BACKEND_API_URL;
+console.log("VITE_BACKEND_API_URL =", import.meta.env.VITE_BACKEND_API_URL);
 
 /**
  * Sends a POST request to the backend to register a new user.
@@ -7,13 +8,16 @@ const API_URL = import.meta.env.VITE_BACKEND_API_URL + '/api/users'; // check if
  * @returns {Promise<object>} A promise that resolves to the response data from the backend, which includes the new user object and a JWT.
  */
 
-export const  register = async (userData) => {
-    try{
-        const response = await axios.post(`${API_URL}/register`, userData);
+export const register = async (userData) => {
+    try {
+        const response = await axios.post(
+            `${API_BASE}/api/users/register`,
+            userData
+        );
         return response.data;
-    } catch(error) {
+    } catch (error) {
         console.error('Registration failed:', error);
-        throw new Error (
+        throw new Error(
             error.response?.data?.message || 'Registration failed'
         );
     }
@@ -26,14 +30,18 @@ export const  register = async (userData) => {
  */
 
 export const login = async (userData) => {
-    try{
-        const response = await axios.post(`${API_URL}/login`, userData);
+    try {
+        const response = await axios.post(
+            `${API_BASE}/api/users/login`,
+            userData
+        );
         return response.data;
-    } catch(error){
+    } catch (error) {
         console.error('Login failed:', error);
-
         throw new Error(
             error.response?.data?.message || 'Login failed'
         );
     }
 };
+
+console.log("API BASE:", import.meta.env.VITE_BACKEND_API_URL);

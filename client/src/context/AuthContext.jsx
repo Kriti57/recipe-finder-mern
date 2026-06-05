@@ -25,12 +25,15 @@ export const AuthProvider = ({children}) => {
 
         const loadUser = async () => {
             try {
-                const res = await fetch('/api/users/profile', {
-                    headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Cache-Control': 'no-cache',
-                    },
-                });
+                const res = await fetch(
+                    `${import.meta.env.VITE_BACKEND_API_URL}/api/users/profile`,
+                    {
+                        headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Cache-Control': 'no-cache',
+                        },
+                    }
+                    );
                 
                 if (!res.ok) throw new Error('Unauthorized');
                 const data = await res.json().catch(() => null);
